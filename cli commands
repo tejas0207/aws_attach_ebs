@@ -1,0 +1,20 @@
+#create key pair
+aws ec2 create-key-pair --key-name cli
+
+# create security group
+aws ec2 create-security-group --description "aws cli project" --group-name mysgcli   
+
+# add ssh rule to security group
+aws ec2 authorize-security-group-ingress --group-id "sg-08711bc90c5a64e07" --protocol tcp --port 22 --cidr 0.0.0.0/0
+
+# add tcp(web port) rule to security group
+aws ec2 authorize-security-group-ingress --group-id "sg-08711bc90c5a64e07" --protocol tcp --port 80 --cidr 0.0.0.0/0
+
+# launch an instance with key-pair and security group
+aws ec2 run-instances --image-id ami-010aff33ed5991201 --instance-type t2.micro --key-name cli --security-group-ids sg-08711bc90c5a64e07 
+
+# create ebs volume of size 1GB
+aws ec2 create-volume --availability-zone ap-south-1a --size 1
+
+# attach ebs volume to ec2 instance
+aws ec2 attach-volume  --device /dev/sdh --instance-id i-0d0c970d2561fb93e --volume-id vol-0414a34fa26651f61
